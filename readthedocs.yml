@@ -1,0 +1,6 @@
+conda:
+    file: docs/environment.yml
+python:
+    requirements_file: requirements.txt
+    version: 3
+    pip_install: true
