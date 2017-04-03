@@ -205,3 +205,15 @@ autoapi_modules = {
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'https://docs.python.org/3.4': None}
+
+# Mocking system dependencies
+from mock import Mock as MagicMock
+
+
+class Mock(MagicMock):
+    @classmethod
+    def __getattr__(cls, name):
+        return Mock()
+
+MOCK_MODULES = ['pcapy']
+sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
