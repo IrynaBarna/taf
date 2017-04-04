@@ -23,8 +23,9 @@
 
 import os
 import sys
-import datetime
 import time
+import datetime
+import importlib
 
 import sphinx_rtd_theme
 
@@ -222,7 +223,7 @@ class Mock(object):
     __mul__ = None
     __neg__ = None
     get_gst = None
-    SolverType_LU  = None
+    SolverType_LU = None
 
     def __init__(self, *args, **kwargs):
         pass
@@ -241,14 +242,16 @@ class Mock(object):
         else:
             return Mock()
 
-import importlib
 
-
-MOCK_MODULES = ['oslo_log']
+MOCK_MODULES = ['taf.testlib.TRex.TRex', 'taf.testlib.TRex.TRexHTL', 'taf.testlib.tempest_clients.magnum.sfc_client',
+                'taf.testlib.tempest_clients.magnum.models.clusterpatch_mode', 'oslo_log', 'linux.lldp', 'pcapy',
+                'tempest', 'tempest.lib', 'tempest.lib.exceptions', 'tempest.lib.common',
+                'trex_stl_lib', 'trex_stl_lib.api', 'trex_stl_lib.trex_stl_hltapi',
+                ]
 
 for mod_name in MOCK_MODULES:
     try:
         importlib.import_module(mod_name)
-    except:
-        print("Generating mock module %s." % mod_name)
+    except ImportError:
+        print("Generating mock module %s" % mod_name)
         sys.modules[mod_name] = Mock()
