@@ -207,16 +207,50 @@ autoapi_modules = {
 intersphinx_mapping = {'https://docs.python.org/3.4': None}
 
 
-# Mocking system dependencies
-from mock import Mock as MagicMock
+# No need to install 3rd party packages to generate the docs
+class Mock(object):
 
+    __all__ = []
 
-class Mock(MagicMock):
-    @classmethod
-    def __getattr__(cls, name):
+    assign = None
+    apply = None
+    vector = None
+    split = None
+    interpolate = None
+    copy = None
+    __add__ = None
+    __mul__ = None
+    __neg__ = None
+    get_gst = None
+    SolverType_LU  = None
+
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def __call__(self, *args, **kwargs):
         return Mock()
 
-MOCK_MODULES = ['pcapy']
-sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+    @classmethod
+    def __getattr__(cls, name):
+        if name in ('__file__', '__path__'):
+            return '/dev/null'
+        elif name[0] == name[0].upper():
+            mockType = type(name, (Mock, ), {})
+            mockType.__module__ = __name__
+            return mockType
+        else:
+            return Mock()
 
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+import importlib
+
+
+MOCK_MODULES = ['oslo_log', 'linux.lldp', 'taf.testlib.TRex.TRex', 'taf.testlib.TRex.TRexHTL', 'tempest.lib'
+                'taf.testlib.tempest_clients.magnum.sfc_client', 'pcapy', 'trex_stl_lib.api', 'tempest.lib.common',
+                'taf.testlib.tempest_clients.magnum.models.clusterpatch_mode', 'tempest']
+
+for mod_name in MOCK_MODULES:
+    try:
+        importlib.import_module(mod_name)
+    except:
+        print("Generating mock module %s." % mod_name)
+        sys.modules[mod_name] = Mock()
