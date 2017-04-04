@@ -244,9 +244,7 @@ class Mock(object):
 import importlib
 
 
-MOCK_MODULES = ['oslo_log', 'linux.lldp', 'taf.testlib.TRex.TRex', 'taf.testlib.TRex.TRexHTL', 'tempest.lib'
-                'taf.testlib.tempest_clients.magnum.sfc_client', 'pcapy', 'trex_stl_lib.api', 'tempest.lib.common',
-                'taf.testlib.tempest_clients.magnum.models.clusterpatch_mode', 'tempest']
+MOCK_MODULES = ['oslo_log']
 
 for mod_name in MOCK_MODULES:
     try:
